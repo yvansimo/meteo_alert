@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'Home/login.dart';
-import 'Home/home.dart';
+import 'package:meteo_alerte/home/home.dart';
+import 'package:meteo_alerte/home/signin.dart';
+import 'package:meteo_alerte/pages/homelogged.dart';
+import 'package:meteo_alerte/pages/sidepages/map.dart';
+import 'home/login.dart';
+import 'home/splash.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,15 +17,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.blue[300],
-      ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const LoginPage(),
-        '/login': (context) => const HomePage(),
+        '/': (context) => const SplashPage(),
+        '/home': (context) => const HompePage(),
+        '/login': (context) => const LoginPage(),
+        '/signin': (context) => const SignInPage(),
+        '/homelogged': (context) => const HomeLoggedPage(),
+        '/map': (context) => const MapPage(),
       },
     );
   }
 }
-

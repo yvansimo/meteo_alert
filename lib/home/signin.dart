@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SignInPage extends StatefulWidget {
+  const SignInPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignInPage> createState() => _SignInPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-
+class _SignInPageState extends State<SignInPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -32,16 +31,15 @@ class _LoginPageState extends State<LoginPage> {
             child: ListView(
               children: <Widget>[
                 Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(30),
-                  child: const Text(
-                    'Se Connecter',
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 30),
-                  )
-                ),
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(30),
+                    child: const Text(
+                      'Inscription',
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 30),
+                    )),
                 Container(
                   padding: const EdgeInsets.all(10),
                   child: TextField(
@@ -57,7 +55,8 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.black, // Bordure quand le champ est en focus (noir)
+                          color: Colors
+                              .black, // Bordure quand le champ est en focus (noir)
                           width: 2,
                         ),
                       ),
@@ -82,7 +81,8 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.black, // Bordure quand le champ est en focus (noir)
+                          color: Colors
+                              .black, // Bordure quand le champ est en focus (noir)
                           width: 2,
                         ),
                       ),
@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                     margin: const EdgeInsets.fromLTRB(90, 30, 90, 30),
                     child: ElevatedButton(
                       child: const Text(
-                        'Login',
+                        'Connexion',
                         style: TextStyle(
                           color: Colors.black,
                         ),
@@ -105,37 +105,33 @@ class _LoginPageState extends State<LoginPage> {
                         print(usernameController.text);
                         print(passwordController.text);
                       },
-                    )
-                ),
+                    )),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     const Text(
-                      'Pas de compte?',
-                      style: TextStyle(
-                        color: Colors.white
-                      ),
+                      'Déja un compte?',
+                      style: TextStyle(color: Colors.white),
                     ),
                     TextButton(
                       child: const Text(
-                        'Inscris toi',
+                        'Connecte toi',
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.black,
                         ),
                       ),
                       onPressed: () {
-                        //signup screen
+                        Navigator.pushNamed(context, '/login');
                       },
                     )
-                  ],  
+                  ],
                 ),
               ],
             ),
           ),
         ],
       ),
-      
     );
   }
 }
