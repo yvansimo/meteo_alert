@@ -11,7 +11,70 @@ class _HomeLoggedPageState extends State<HomeLoggedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.lightBlue[900],
+              ),
+              child: const Text(
+                'Meteo alert',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.home,
+              ),
+              title: const Text('Accueil'),
+              onTap: () {
+                // Action pour l'option 1
+                Navigator.pop(context); // Ferme le Drawer
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.map,
+              ),
+              title: const Text('Carte'),
+              onTap: () {
+                // Action pour l'option 2
+                Navigator.pushNamed(context, '/map'); // Ferme le Drawer
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.exit_to_app,
+              ),
+              title: const Text('Deconnexion'),
+              onTap: () {
+                // Action pour l'option 2
+                Navigator.pushNamed(context, '/home'); // Deconnexion
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(
+                Icons.menu,
+                color: Colors.white, // Couleur de l'icône (blanc)
+              ),
+              onPressed: () {
+                // Utilisation du bon contexte pour ouvrir le Drawer
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
         backgroundColor: Colors.lightBlue[900],
         elevation: 0,
         title: const Text(
@@ -64,6 +127,7 @@ class _HomeLoggedPageState extends State<HomeLoggedPage> {
                   ),
                 ),
               ],
+              color: Colors.white,
             ),
           ),
         ],

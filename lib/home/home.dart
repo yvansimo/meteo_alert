@@ -79,33 +79,35 @@ class _HompePageState extends State<HompePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Location
-                Text(
-                  "Zocca, Italie",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 16),
-
                 // Temperature
+                Text(
+                  "1.97 °C",
+                  style: TextStyle(
+                      fontSize: 56,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+                SizedBox(height: 4),
+
+                // Location
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      Icons.thermostat_outlined,
+                      Icons.location_on,
                       color: Colors.white,
+                      size: 12.0,
                     ),
-                    SizedBox(width: 8),
                     Text(
-                      "Température : 1.97 °C",
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      "Zocca, Italie",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
                     ),
                   ],
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: 54),
 
                 // Feels Like
                 Row(
