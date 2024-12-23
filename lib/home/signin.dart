@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/supabase.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -10,6 +11,48 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+
+  Future<void> handleInsertUser() async {
+    final username = usernameController.text.trim();
+    final userpass = passwordController.text.trim();
+    final useremail = emailController.text.trim();
+    final SupabaseService supabaseService = SupabaseService();
+
+    if (username.isEmpty || useremail.isEmpty || userpass.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Veuillez remplir tous les champs')),
+      );
+      return;
+    }
+
+    try {
+      await supabaseService.insertUser(
+          username, useremail, userpass); // Appeler la fonction du service
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Utilisateur ajouté avec succès !',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+      usernameController.clear();
+      emailController.clear();
+      passwordController.clear();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Erreur : Utilisateur non inséré.',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +87,31 @@ class _SignInPageState extends State<SignInPage> {
                   padding: const EdgeInsets.all(10),
                   child: TextField(
                     controller: usernameController,
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black,
+                          width: 2,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors
+                              .black, // Bordure quand le champ est en focus (noir)
+                          width: 2,
+                        ),
+                      ),
+                      labelText: 'Nom utilisateur',
+                      labelStyle: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  child: TextField(
+                    controller: emailController,
                     decoration: const InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
@@ -95,15 +163,19 @@ class _SignInPageState extends State<SignInPage> {
                     height: 50,
                     margin: const EdgeInsets.fromLTRB(90, 30, 90, 30),
                     child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black,
+                      ),
                       child: const Text(
-                        'Connexion',
+                        'Inscription',
                         style: TextStyle(
+                          fontSize: 20,
                           color: Colors.black,
                         ),
                       ),
                       onPressed: () {
-                        print(usernameController.text);
-                        print(passwordController.text);
+                        handleInsertUser();
                       },
                     )),
                 Row(

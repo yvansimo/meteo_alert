@@ -95,16 +95,19 @@ class _LoginPageState extends State<LoginPage> {
                     height: 50,
                     margin: const EdgeInsets.fromLTRB(90, 30, 90, 30),
                     child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black,
+                      ),
                       child: const Text(
                         'Connexion',
                         style: TextStyle(
+                          fontSize: 20,
                           color: Colors.black,
                         ),
                       ),
                       onPressed: () {
                         Navigator.pushNamed(context, '/homelogged');
-                        print(usernameController.text);
-                        print(passwordController.text);
                       },
                     )),
                 Row(
