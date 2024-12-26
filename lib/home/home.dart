@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import '../services/location.dart';
 
 class HompePage extends StatefulWidget {
   const HompePage({super.key});
@@ -8,6 +10,68 @@ class HompePage extends StatefulWidget {
 }
 
 class _HompePageState extends State<HompePage> {
+  final LocationService locationService = LocationService();
+
+  String locationMessage = "Localisation en attente...";
+  String address = "Adresse en attente...";
+  String weatherMessage = "Météo en attente...";
+  String temperature = "Température en attente...";
+  String tempmin = "Température min en attente...";
+  String tempmax = "Température max en attente...";
+  String feels = "Ressentie en attente...";
+  String humidity = "Humidité en attente...";
+  String wind = "Vent en attente...";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchLocationAndWeather();
+  }
+
+  Future<void> fetchLocationAndWeather() async {
+    try {
+      Position? position = await locationService.getCurrentLocation();
+      if (position != null) {
+        setState(() {
+          locationMessage =
+              "Latitude: ${position.latitude}, Longitude: ${position.longitude}";
+        });
+
+        address = await locationService.getAddressFromCoordinates(
+            position.latitude, position.longitude);
+
+        // Affichage de l'adresse
+        setState(() {
+          address = address;
+        });
+
+        //Données météo
+        Map<String, dynamic> weatherData = await locationService.getWeather(
+            position.latitude, position.longitude);
+
+        setState(() {
+          weatherMessage = weatherData['weather'][0]['description'];
+          temperature = "${weatherData['main']['temp']} °C";
+          tempmin = "${weatherData['main']['temp_min']} °C";
+          tempmax = "${weatherData['main']['temp_max']} °C";
+          feels = "${weatherData['main']['feels_like']} °C";
+          humidity = "${weatherData['main']['humidity']} %";
+        });
+      }
+    } catch (e) {
+      setState(() {
+        locationMessage = "Erreur : $e";
+        address = "Erreur : $e";
+        weatherMessage = "Erreur : $e";
+        temperature = "Erreur : $e";
+        tempmin = "Erreur : $e";
+        tempmax = "Erreur : $e";
+        feels = "Erreur : $e";
+        humidity = "Erreur : $e";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -74,87 +138,114 @@ class _HompePageState extends State<HompePage> {
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.all(30.0),
+          Padding(
+            padding: const EdgeInsets.all(30.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Temperature
                 Text(
-                  "1.97 °C",
-                  style: TextStyle(
+                  temperature,
+                  style: const TextStyle(
                       fontSize: 56,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
 
                 // Location
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.location_on,
                       color: Colors.white,
                       size: 12.0,
                     ),
                     Text(
-                      "Zocca, Italie",
-                      style: TextStyle(
+                      address,
+                      style: const TextStyle(
                         fontSize: 12,
                         color: Colors.white,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 54),
+                const SizedBox(height: 54),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.thermostat,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          "Min : $tempmin",
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.thermostat,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          "Max : $tempmax",
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
 
                 // Feels Like
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.accessibility_new,
                       color: Colors.white,
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Text(
-                      "Ressenti : 1.97 °C",
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      "Ressenti : $feels",
+                      style: const TextStyle(fontSize: 12, color: Colors.white),
                     ),
                   ],
                 ),
-                SizedBox(height: 8),
-
-                // Humidity
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.cloud_outlined,
-                      color: Colors.white,
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      "Humidité : 92%",
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
+                const SizedBox(height: 8),
 
                 // Description
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.cloud_queue,
                       color: Colors.white,
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Text(
-                      "Description : light rain",
-                      style: TextStyle(
+                      "Description : $weatherMessage",
+                      style: const TextStyle(
                         fontSize: 18,
                         fontStyle: FontStyle.italic,
                         color: Colors.white,
@@ -162,20 +253,20 @@ class _HompePageState extends State<HompePage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 35),
 
-                // Wind
+                // Humidity
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.air,
+                    const Icon(
+                      Icons.water,
                       color: Colors.white,
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Text(
-                      "Vent : 1.22 m/s",
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      "Humidité : $humidity",
+                      style: const TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ],
                 ),

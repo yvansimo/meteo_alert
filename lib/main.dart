@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meteo_alerte/pages/sidepages/risk.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:meteo_alerte/home/home.dart';
 import 'package:meteo_alerte/home/signin.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         '/signin': (context) => const SignInPage(),
         '/homelogged': (context) => const HomeLoggedPage(),
         '/map': (context) => const MapPage(),
+        '/risk': (context) => const RiskPage(),
       },
     );
   }
