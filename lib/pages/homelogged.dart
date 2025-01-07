@@ -49,11 +49,31 @@ class _HomeLoggedPageState extends State<HomeLoggedPage> {
             ),
             ListTile(
               leading: const Icon(
+                Icons.support_agent, // Icône d'assistance
+              ),
+              title: const Text('Assistance'),
+              onTap: () {
+                // Action pour l'option 3
+                Navigator.pushNamed(context, '/assistance'); // Ferme le Drawer
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                (Icons.settings) // Icône de parametre
+              ),
+              title: const Text('Parametre'),
+              onTap: () {
+                // Action pour l'option 4
+                Navigator.pushNamed(context, '/parametre'); // Ferme le Drawer
+              },
+            ),
+            ListTile(
+              leading: const Icon(
                 Icons.exit_to_app,
               ),
               title: const Text('Deconnexion'),
               onTap: () {
-                // Action pour l'option 2
+                // Action pour l'option 5
                 Navigator.pushNamed(context, '/home'); // Deconnexion
               },
             ),

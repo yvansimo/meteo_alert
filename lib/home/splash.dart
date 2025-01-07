@@ -14,7 +14,7 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
 
     // Démarrer un timer pour naviguer vers la route '/login' après 5 secondes
-    Timer(const Duration(seconds: 10), () {
+    Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacementNamed(context, '/home');
     });
   }

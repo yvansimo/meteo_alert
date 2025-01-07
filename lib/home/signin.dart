@@ -176,6 +176,7 @@ class _SignInPageState extends State<SignInPage> {
                       ),
                       onPressed: () {
                         handleInsertUser();
+                        Navigator.pushNamed(context, '/login');
                       },
                     )),
                 Row(

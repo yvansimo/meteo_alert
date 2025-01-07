@@ -41,6 +41,12 @@ dependencies:
   permission_handler: ^11.3.1
   supabase_flutter: ^2.8.2
   shared_preferences: ^2.3.4
+  url_launcher: ^6.0.9  # Assurez-vous d'ajouter cette ligne
+  logger: ^1.0.0
+  http: ^1.2.2
+  geocoding: ^3.0.0
+  lottie: ^2.0.0
+
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +72,12 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+
+    - assets/animations/nuageux.json
+    - assets/animations/soso.json
+    - assets/animations/brume.json
+    - assets/animations/rain.json
+
     - assets/Background.jpg
   #   - images/a_dot_ham.jpeg
 

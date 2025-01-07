@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:meteo_alerte/services/authenificationlogin.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -8,8 +10,67 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final AuthentificationService _authService = AuthentificationService();
+  String? _errorMessage;
+  bool _isLoading = false;
+
+  Future<void> saveUserCredentials(String email, String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('email', email);
+    await prefs.setString('password', password);
+  }
+
+  Future<Map<String, String>> getUserCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    final email = prefs.getString('email') ?? '';
+    final password = prefs.getString('password') ?? '';
+    return {'email': email, 'password': password};
+  }
+
+  Future<void> _login() async {
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      setState(() {
+        _errorMessage = "Veuillez remplir tous les champs.";
+      });
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      bool success = await _authService.login(
+        login: emailController.text,
+        pwd: passwordController.text,
+      );
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Connexion réussie."),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pushReplacementNamed(context, '/homesecond');
+      } else {
+        setState(() {
+          _errorMessage = "Email ou mot de passe incorrect.";
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = "Une erreur s'est produite. Veuillez réessayer.";
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,104 +92,82 @@ class _LoginPageState extends State<LoginPage> {
             child: ListView(
               children: <Widget>[
                 Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(30),
-                    child: const Text(
-                      'Connexion',
-                      style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 30),
-                    )),
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  child: TextField(
-                    controller: usernameController,
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.black,
-                          width: 2,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors
-                              .black, // Bordure quand le champ est en focus (noir)
-                          width: 2,
-                        ),
-                      ),
-                      labelText: 'Email',
-                      labelStyle: TextStyle(color: Colors.black),
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(30),
+                  child: const Text(
+                    'Connexion',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 30,
                     ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  child: TextField(
-                    obscureText: true,
-                    controller: passwordController,
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.black,
-                          width: 2,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors
-                              .black, // Bordure quand le champ est en focus (noir)
-                          width: 2,
-                        ),
-                      ),
-                      labelText: 'Password',
-                      labelStyle: TextStyle(color: Colors.black),
+                if (_errorMessage != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: Text(
+                      _errorMessage!,
+                      style: const TextStyle(color: Colors.red),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                TextField(
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 2),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 2),
                     ),
                   ),
                 ),
-                Container(
-                    height: 50,
-                    margin: const EdgeInsets.fromLTRB(90, 30, 90, 30),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
-                      ),
-                      child: const Text(
-                        'Connexion',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/homelogged');
-                      },
-                    )),
+                const SizedBox(height: 20),
+                TextField(
+                  obscureText: true,
+                  controller: passwordController,
+                  decoration: const InputDecoration(
+                    labelText: 'Mot de passe',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 2),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
+                  onPressed: _isLoading ? null : _login,
+                  child: _isLoading
+                      ? const CircularProgressIndicator()
+                      : const Text(
+                    'Connexion',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    const Text(
-                      'Pas de compte?',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    const Text('Pas de compte ?', style: TextStyle(color: Colors.white)),
                     TextButton(
-                      child: const Text(
-                        'Inscris toi',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                        ),
-                      ),
+                      child: const Text('Inscris-toi', style: TextStyle(fontSize: 20, color: Colors.black)),
                       onPressed: () {
                         Navigator.pushNamed(context, '/signin');
                       },
-                    )
+                    ),
                   ],
                 ),
               ],
