@@ -211,7 +211,7 @@ class _HomeLoggedPageState extends State<HomeLoggedPage> {
           child: Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/Background.jpg'),
+                image: AssetImage('Background.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
