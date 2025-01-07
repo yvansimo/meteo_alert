@@ -87,7 +87,7 @@ class _RiskPageState extends State<RiskPage> {
                   child: Container(
                     decoration: const BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('assets/Background.jpg'),
+                        image: AssetImage('Background.jpg'),
                         fit: BoxFit.cover,
                       ),
                     ),

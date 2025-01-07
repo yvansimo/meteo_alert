@@ -216,6 +216,9 @@ class _MapPageState extends State<MapPage> {
                   ),
                 ),
               ),
+              const SizedBox(
+                width: 10,
+              ),
               ElevatedButton(
                 onPressed: () {
                   final origin = originController.text.trim();
@@ -227,6 +230,17 @@ class _MapPageState extends State<MapPage> {
                     print('Veuillez saisir des adresses valides.');
                   }
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      Colors.lightBlue[900], // Couleur de fond du bouton
+                  foregroundColor: Colors.white, // Couleur du texte
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 12, horizontal: 20), // Espacement
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8), // Coins arrondis
+                  ),
+                  elevation: 5, // Effet d'ombre
+                ),
                 child: const Text('Tracer l\'itinéraire'),
               ),
             ],

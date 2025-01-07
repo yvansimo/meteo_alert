@@ -40,7 +40,13 @@ class _LoginPageState extends State<LoginPage> {
       if (isLoggedIn) {
         // Connexion réussie
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Connexion réussie !", style: TextStyle(color: Colors.white),), backgroundColor: Colors.green,),
+          const SnackBar(
+            content: Text(
+              "Connexion réussie !",
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.green,
+          ),
         );
 
         // Naviguer vers une autre page (par exemple, page d'accueil)
@@ -48,7 +54,13 @@ class _LoginPageState extends State<LoginPage> {
       } else {
         // Connexion échouée
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Nom d'utilisateur ou mot de passe incorrect.", style: TextStyle(color: Colors.white),), backgroundColor: Colors.red,),
+          const SnackBar(
+            content: Text(
+              "Nom d'utilisateur ou mot de passe incorrect.",
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } catch (e) {
@@ -71,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/Background.jpg'),
+                  image: AssetImage('Background.jpg'),
                   fit: BoxFit.cover,
                 ),
               ),
