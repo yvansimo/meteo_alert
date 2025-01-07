@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:meteo_alerte/pages/sidepages/risk.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:meteo_alerte/home/home.dart';
@@ -9,7 +10,11 @@ import 'home/login.dart';
 import 'home/splash.dart';
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialisation de Hive
+  await Hive.initFlutter();
 
   await Supabase.initialize(
     url:
