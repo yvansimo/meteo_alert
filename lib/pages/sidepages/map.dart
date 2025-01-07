@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../services/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -16,6 +18,9 @@ class _MapPageState extends State<MapPage> {
   GoogleMapController? mapController; // Nullable controller
   LatLng? currentPosition;
   final Set<Marker> markers = {};
+  final Set<Polyline> polylines = {};
+  final TextEditingController originController = TextEditingController();
+  final TextEditingController destinationController = TextEditingController();
 
   void onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -36,6 +41,8 @@ class _MapPageState extends State<MapPage> {
   @override
   void dispose() {
     mapController?.dispose(); // Dispose the controller safely
+    originController.dispose();
+    destinationController.dispose();
     super.dispose();
   }
 
@@ -91,6 +98,7 @@ class _MapPageState extends State<MapPage> {
         currentPosition!.longitude,
         type,
       );
+      print(places); // Vérifiez ce qui est récupéré
 
       setState(() {
         for (var place in places) {
@@ -108,6 +116,37 @@ class _MapPageState extends State<MapPage> {
       });
     } catch (e) {
       print("Erreur lors de la récupération des lieux : $e");
+    }
+  }
+
+  void fetchRoute(String originAddress, String destinationAddress) async {
+    try {
+      // Convertir les adresses en coordonnées
+      final LatLng originCoordinates =
+          await locationService.getCoordinatesFromAddress(originAddress);
+      final LatLng destinationCoordinates =
+          await locationService.getCoordinatesFromAddress(destinationAddress);
+
+      // Convertir LatLng en chaîne de caractères "latitude,longitude"
+      final String origin =
+          '${originCoordinates.latitude},${originCoordinates.longitude}';
+      final String destination =
+          '${destinationCoordinates.latitude},${destinationCoordinates.longitude}';
+
+      // Appeler l'API Directions avec les coordonnées
+      final route = await locationService.fetchRoute(origin, destination);
+
+      setState(() {
+        polylines.clear();
+        polylines.add(Polyline(
+          polylineId: const PolylineId('route'),
+          points: route,
+          color: Colors.blue,
+          width: 5,
+        ));
+      });
+    } catch (e) {
+      print('Erreur lors du traçage de l\'itinéraire : $e');
     }
   }
 
@@ -153,17 +192,60 @@ class _MapPageState extends State<MapPage> {
           ),
         ],
       ),
-      body: GoogleMap(
-        onMapCreated: onMapCreated,
-        initialCameraPosition: CameraPosition(
-          target: currentPosition ?? const LatLng(47.4784, -0.5632),
-          zoom: 11.0,
+      body: Column(children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: originController,
+                  decoration: const InputDecoration(
+                    labelText: "Point de départ",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: TextField(
+                  controller: destinationController,
+                  decoration: const InputDecoration(
+                    labelText: "Destination",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  final origin = originController.text.trim();
+                  final destination = destinationController.text.trim();
+
+                  if (origin.isNotEmpty && destination.isNotEmpty) {
+                    fetchRoute(origin, destination);
+                  } else {
+                    print('Veuillez saisir des adresses valides.');
+                  }
+                },
+                child: const Text('Tracer l\'itinéraire'),
+              ),
+            ],
+          ),
         ),
-        markers: markers,
-        myLocationEnabled:
-            true, // Montre la position actuelle avec une icône "my location"
-        myLocationButtonEnabled: true,
-      ),
+        Expanded(
+          child: GoogleMap(
+            onMapCreated: onMapCreated,
+            initialCameraPosition: CameraPosition(
+              target: currentPosition ?? const LatLng(47.4784, -0.5632),
+              zoom: 11.0,
+            ),
+            markers: markers,
+            myLocationEnabled:
+                true, // Montre la position actuelle avec une icône "my location"
+            myLocationButtonEnabled: true,
+          ),
+        )
+      ]),
     );
   }
 }

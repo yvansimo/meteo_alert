@@ -67,6 +67,28 @@ class LocationService {
     }
   }
 
+  Future<LatLng> getCoordinatesFromAddress(String address) async {
+    final String url =
+        'https://maps.googleapis.com/maps/api/geocode/json?address=${Uri.encodeComponent(address)}&key=$_googleMapsApiKey';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['results'] != null && data['results'].isNotEmpty) {
+          final location = data['results'][0]['geometry']['location'];
+          return LatLng(location['lat'], location['lng']);
+        } else {
+          throw Exception('Aucune coordonnée trouvée pour cette adresse.');
+        }
+      } else {
+        throw Exception('Erreur HTTP : ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Erreur lors de l\'appel API Geocoding : $e');
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getNearbyPlaces(
       double latitude, double longitude, String type) async {
     final String url =
@@ -116,5 +138,63 @@ class LocationService {
     } catch (e) {
       throw Exception("Erreur lors de l'appel API météo : $e");
     }
+  }
+
+  /// Méthode pour récupérer l'itinéraire entre deux points
+  Future<List<LatLng>> fetchRoute(String origin, String destination) async {
+    final String url =
+        'https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination&key=$_googleMapsApiKey';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['routes'] != null && data['routes'].isNotEmpty) {
+          // Extraire les points du chemin (polyline)
+          final polylinePoints =
+              data['routes'][0]['overview_polyline']['points'];
+          return decodePolyline(polylinePoints);
+        } else {
+          throw Exception('Aucun itinéraire trouvé.');
+        }
+      } else {
+        throw Exception('Erreur HTTP : ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Erreur lors de la récupération de l\'itinéraire : $e');
+    }
+  }
+
+  /// Méthode pour décoder une polyline encodée en liste de LatLng
+  List<LatLng> decodePolyline(String encoded) {
+    List<LatLng> polyline = [];
+    int index = 0, len = encoded.length;
+    int lat = 0, lng = 0;
+
+    while (index < len) {
+      int shift = 0, result = 0;
+      int b;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1F) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      int deltaLat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+      lat += deltaLat;
+
+      shift = 0;
+      result = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1F) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      int deltaLng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+      lng += deltaLng;
+
+      polyline.add(LatLng(lat / 1E5, lng / 1E5));
+    }
+
+    return polyline;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/supabase.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,6 +11,56 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
+
+  Future<void> handleLogin() async {
+    setState(() {
+      isLoading = true; // Activer l'indicateur de chargement
+    });
+
+    final username = usernameController.text.trim();
+    final password = passwordController.text.trim();
+    final SupabaseService supabaseService = SupabaseService();
+
+    if (username.isEmpty || password.isEmpty) {
+      // Vérifiez si les champs sont vides
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Veuillez remplir tous les champs.")),
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    try {
+      // Appeler la fonction de connexion
+      final isLoggedIn = await supabaseService.loginUser(username, password);
+
+      if (isLoggedIn) {
+        // Connexion réussie
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Connexion réussie !", style: TextStyle(color: Colors.white),), backgroundColor: Colors.green,),
+        );
+
+        // Naviguer vers une autre page (par exemple, page d'accueil)
+        Navigator.pushReplacementNamed(context, '/homelogged');
+      } else {
+        // Connexion échouée
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Nom d'utilisateur ou mot de passe incorrect.", style: TextStyle(color: Colors.white),), backgroundColor: Colors.red,),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Erreur : $e")),
+      );
+    } finally {
+      setState(() {
+        isLoading = false; // Désactiver l'indicateur de chargement
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('Background.jpg'),
+                  image: AssetImage('assets/Background.jpg'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -60,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                           width: 2,
                         ),
                       ),
-                      labelText: 'Email',
+                      labelText: 'Nom utilisateur',
                       labelStyle: TextStyle(color: Colors.black),
                     ),
                   ),
@@ -106,9 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                           color: Colors.black,
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/homelogged');
-                      },
+                      onPressed: handleLogin,
                     )),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
