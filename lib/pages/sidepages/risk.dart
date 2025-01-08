@@ -190,7 +190,7 @@ class _RiskPageState extends State<RiskPage> {
   Future<void> launchURL(String url) async {
     final Uri uri = Uri.parse(url);
     // Utilisation de la méthode canLaunchUrl et launchUrl avec la nouvelle API
-    if (await canLaunchUrl(uri)) {
+    if (await launchUrl(uri)) {
       await launchUrl(uri);
     } else {
       throw 'Impossible de lancer l\'URL : $url';

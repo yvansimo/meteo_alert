@@ -29,21 +29,28 @@ class LocalDatabase {
   }
 
   Future<void> insertUser(String username, String useremail, String userpass) async {
-     try {
-    final db = await database;
-    await db.insert(
-      'users',
-      {
-        'username': username,
-        'useremail': useremail,
-        'userpass': userpass,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-    print('Utilisateur inséré dans SQLite : $username');
-  } catch (e) {
-    print('Erreur lors de l\'insertion dans SQLite : $e');
+    try {
+      final db = await database;
+      print('Insertion dans SQLite : $username, $useremail, $userpass');
+      await db.insert(
+        'users',
+        {
+          'username': username,
+          'useremail': useremail,
+          'userpass': userpass,
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+
+      );
+      print('Utilisateur inséré dans SQLite : $username');
+    } catch (e) {
+      print('Erreur lors de l\'insertion dans SQLite : ${e.toString()}');
+    }
   }
+
+  Future<void> logAllUsers() async {
+    final users = await fetchUsers();
+    print('Utilisateurs dans SQLite : $users');
   }
 
   Future<List<Map<String, dynamic>>> fetchUsers() async {
