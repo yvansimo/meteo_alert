@@ -1,23 +1,36 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'local.dart';
 
 class SupabaseService {
   final SupabaseClient client = Supabase.instance.client;
+  final LocalDatabase localDatabase = LocalDatabase();
 
   // Fonction pour insérer un utilisateur
   Future<void> insertUser(
       String username, String useremail, String userpass) async {
-    final response = await client
-        .from('users') // Nom de la table
-        .insert({
-      'username': username,
-      'useremail': useremail,
-      'userpass': userpass
-    }); // Requête directe sans execute()
+    try {
+      // Enregistrement dans la base locale
+      await localDatabase.insertUser(username, useremail, userpass);
 
-    if (response != null) {
-      throw Exception(
-          'Erreur : Utilisateur non inséré.'); // Lancer une exception en cas d'erreur
+      // Enregistrement dans la base distante (Supabase)
+      final response = await client.from('users').insert({
+        'username': username,
+        'useremail': useremail,
+        'userpass': userpass,
+      });
+
+      if (response.error != null) {
+        throw Exception('Erreur : Utilisateur non inséré dans Supabase.');
+      }
+
+      print('Utilisateur enregistré localement et en ligne.');
+    } catch (e) {
+      print('Erreur lors de l\'enregistrement : $e');
     }
+  }
+
+   Future<List<Map<String, dynamic>>> getLocalUsers() async {
+    return await localDatabase.fetchUsers();
   }
 
   Future<bool> loginUser(String username, String userpass) async {

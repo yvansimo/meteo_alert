@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:meteo_alerte/pages/sidepages/assistance.dart';
 import 'package:meteo_alerte/pages/sidepages/risk.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:meteo_alerte/home/home.dart';
@@ -9,12 +9,10 @@ import 'package:meteo_alerte/pages/sidepages/map.dart';
 import 'home/login.dart';
 import 'home/splash.dart';
 
+
 void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialisation de Hive
-  await Hive.initFlutter();
 
   await Supabase.initialize(
     url:
@@ -41,6 +39,7 @@ class MyApp extends StatelessWidget {
         '/homelogged': (context) => const HomeLoggedPage(),
         '/map': (context) => const MapPage(),
         '/risk': (context) => const RiskPage(),
+        '/assistance': (context) => const AssistancePage(),
       },
     );
   }

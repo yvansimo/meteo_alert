@@ -132,7 +132,7 @@ class _HompePageState extends State<HompePage> {
             child: Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('Background.jpg'),
+                  image: AssetImage('assets/Background.jpg'),
                   fit: BoxFit.cover,
                 ),
               ),
