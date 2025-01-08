@@ -27,6 +27,7 @@ class SupabaseService {
     } catch (e) {
       print('Erreur lors de l\'enregistrement : $e');
     }
+    getLocalUsers();
   }
 
    Future<List<Map<String, dynamic>>> getLocalUsers() async {

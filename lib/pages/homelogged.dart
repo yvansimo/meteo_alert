@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:geolocator/geolocator.dart';
 import '../services/location.dart';
 
@@ -11,6 +12,7 @@ class HomeLoggedPage extends StatefulWidget {
 
 class _HomeLoggedPageState extends State<HomeLoggedPage> {
   final LocationService locationService = LocationService();
+  String meteoAnimation = 'assets/animations/soso.json';
 
   String locationMessage = "Localisation en attente...";
   String address = "Adresse en attente...";
@@ -26,6 +28,24 @@ class _HomeLoggedPageState extends State<HomeLoggedPage> {
   void initState() {
     super.initState();
     fetchLocationAndWeather();
+  }
+
+  String getMeteoAnimation(String? mainCondition) {
+    if (mainCondition == null) return 'assets/animations/soso.json';
+    switch (mainCondition.toLowerCase()) {
+      case 'clouds':
+        return 'assets/animations/nuageux.json';
+      case 'mist':
+        return 'assets/animations/brume.json';
+      case 'fog':
+        return 'assets/animations/nuageux.json';
+      case 'rain':
+        return 'assets/animations/rain.json';
+      case 'clear':
+        return 'assets/animations/soso.json';
+      default:
+        return 'assets/animations/soso.json';
+    }
   }
 
   Future<void> fetchLocationAndWeather() async {
@@ -56,6 +76,9 @@ class _HomeLoggedPageState extends State<HomeLoggedPage> {
           tempmax = "${weatherData['main']['temp_max']} °C";
           feels = "${weatherData['main']['feels_like']} °C";
           humidity = "${weatherData['main']['humidity']} %";
+
+          // Mise à jour de l'animation en fonction de la condition météo principale
+          meteoAnimation = getMeteoAnimation(weatherData['weather'][0]['main']);
         });
       }
     } catch (e) {
@@ -68,6 +91,7 @@ class _HomeLoggedPageState extends State<HomeLoggedPage> {
         tempmax = "Erreur : $e";
         feels = "Erreur : $e";
         humidity = "Erreur : $e";
+        meteoAnimation = 'assets/animations/soso.json';
       });
     }
   }
@@ -129,6 +153,16 @@ class _HomeLoggedPageState extends State<HomeLoggedPage> {
               onTap: () {
                 // Action pour l'option 2
                 Navigator.pushNamed(context, '/assistance'); // Ferme le Drawer
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.settings,
+              ),
+              title: const Text('Parametre'),
+              onTap: () {
+                // Action pour l'option 2
+                Navigator.pushNamed(context, '/parametre'); // Ferme le Drawer
               },
             ),
             ListTile(
@@ -241,6 +275,13 @@ class _HomeLoggedPageState extends State<HomeLoggedPage> {
                     color: Colors.white),
               ),
               const SizedBox(height: 4),
+
+              // Animation météo
+              Lottie.asset(
+                meteoAnimation,
+                width: 150,
+                height: 150,
+              ),
 
               // Location
               Row(

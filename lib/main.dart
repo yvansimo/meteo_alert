@@ -6,6 +6,7 @@ import 'package:meteo_alerte/home/home.dart';
 import 'package:meteo_alerte/home/signin.dart';
 import 'package:meteo_alerte/pages/homelogged.dart';
 import 'package:meteo_alerte/pages/sidepages/map.dart';
+import 'package:meteo_alerte/pages/sidepages/parametre.dart';
 import 'home/login.dart';
 import 'home/splash.dart';
 
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         '/map': (context) => const MapPage(),
         '/risk': (context) => const RiskPage(),
         '/assistance': (context) => const AssistancePage(),
+        '/parametre': (context) => const ParametrePage(),
       },
     );
   }

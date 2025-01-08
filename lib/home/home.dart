@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:geolocator/geolocator.dart';
 import '../services/location.dart';
 
@@ -11,6 +12,8 @@ class HompePage extends StatefulWidget {
 
 class _HompePageState extends State<HompePage> {
   final LocationService locationService = LocationService();
+
+  String meteoAnimation = 'assets/animations/soso.json';
 
   String locationMessage = "Localisation en attente...";
   String address = "Adresse en attente...";
@@ -26,6 +29,24 @@ class _HompePageState extends State<HompePage> {
   void initState() {
     super.initState();
     fetchLocationAndWeather();
+  }
+
+  String getMeteoAnimation(String? mainCondition) {
+    if (mainCondition == null) return 'assets/animations/soso.json';
+    switch (mainCondition.toLowerCase()) {
+      case 'clouds':
+        return 'assets/animations/nuageux.json';
+      case 'mist':
+        return 'assets/animations/brume.json';
+      case 'fog':
+        return 'assets/animations/nuageux.json';
+      case 'rain':
+        return 'assets/animations/rain.json';
+      case 'clear':
+        return 'assets/animations/soso.json';
+      default:
+        return 'assets/animations/soso.json';
+    }
   }
 
   Future<void> fetchLocationAndWeather() async {
@@ -56,6 +77,9 @@ class _HompePageState extends State<HompePage> {
           tempmax = "${weatherData['main']['temp_max']} °C";
           feels = "${weatherData['main']['feels_like']} °C";
           humidity = "${weatherData['main']['humidity']} %";
+
+          // Mise à jour de l'animation en fonction de la condition météo principale
+          meteoAnimation = getMeteoAnimation(weatherData['weather'][0]['main']);
         });
       }
     } catch (e) {
@@ -68,6 +92,7 @@ class _HompePageState extends State<HompePage> {
         tempmax = "Erreur : $e";
         feels = "Erreur : $e";
         humidity = "Erreur : $e";
+        meteoAnimation = 'assets/animations/soso.json';
       });
     }
   }
@@ -151,7 +176,15 @@ class _HompePageState extends State<HompePage> {
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
                 ),
+
                 const SizedBox(height: 4),
+
+                // Animation météo
+                Lottie.asset(
+                  meteoAnimation,
+                  width: 150,
+                  height: 150,
+                ),
 
                 // Location
                 Row(
