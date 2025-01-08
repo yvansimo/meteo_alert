@@ -63,7 +63,7 @@ class _SignInPageState extends State<SignInPage> {
             child: Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('Background.jpg'),
+                  image: AssetImage('assets/Background.jpg'),
                   fit: BoxFit.cover,
                 ),
               ),

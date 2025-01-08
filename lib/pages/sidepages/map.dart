@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../services/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -254,6 +252,7 @@ class _MapPageState extends State<MapPage> {
               zoom: 11.0,
             ),
             markers: markers,
+            polylines: polylines,
             myLocationEnabled:
                 true, // Montre la position actuelle avec une icône "my location"
             myLocationButtonEnabled: true,

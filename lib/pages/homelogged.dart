@@ -123,6 +123,16 @@ class _HomeLoggedPageState extends State<HomeLoggedPage> {
             ),
             ListTile(
               leading: const Icon(
+                Icons.assistant,
+              ),
+              title: const Text('Assistance'),
+              onTap: () {
+                // Action pour l'option 2
+                Navigator.pushNamed(context, '/assistance'); // Ferme le Drawer
+              },
+            ),
+            ListTile(
+              leading: const Icon(
                 Icons.exit_to_app,
               ),
               title: const Text('Deconnexion'),
@@ -211,7 +221,7 @@ class _HomeLoggedPageState extends State<HomeLoggedPage> {
           child: Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('Background.jpg'),
+                image: AssetImage('assets/Background.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
